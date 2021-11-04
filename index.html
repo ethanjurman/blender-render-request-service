@@ -1,0 +1,51 @@
+<html lang="en" ng-app="APP">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Blender Render Request Service</title>
+  </head>
+
+  <body>
+    <!-- upload area -->
+    <div style="margin: 20px auto auto; width: 800px">
+      <h2 style="margin-bottom: 0px">Blender Render Request Service</h2>
+      <div style="margin-bottom: 1em; font-style: italic">
+        An absolutely bare bones blender render service
+      </div>
+      <form method="post" action="upload" enctype="multipart/form-data">
+        <input
+          type="file"
+          name="fileUploaded"
+          accept=".blend,.blend1,.blend2"
+        />
+        <input type="submit" />
+      </form>
+    </div>
+
+    <!-- image area -->
+    <div id="imagebox" style="display: none">
+      <form id="delete-form" method="post" action="delete?file=test.png">
+        <button type="submit" id="delete" style="margin-bottom: 5px">
+          Delete image from server
+        </button>
+        <input id="filename-input" name="filename" disabled="true" />
+        <img id="render" />
+      </form>
+      <script>
+        if (window.location.search) {
+          const imagebox = document.getElementById("imagebox");
+          imagebox.style = "";
+
+          const filename = window.location.search.substr(6);
+          const imageNode = document.getElementById("render");
+          imageNode.src = filename;
+
+          const fileNameInputField = document.getElementById("filename-input");
+          fileNameInputField.value = filename;
+
+          const deleteForm = document.getElementById("delete-form");
+          deleteForm.action = `delete?file=${filename}`;
+        }
+      </script>
+    </div>
+  </body>
+</html>
