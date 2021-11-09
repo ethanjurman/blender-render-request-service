@@ -6,7 +6,7 @@ import fs from "fs-extra"; // file sys manipulation
 
 const app = express();
 app.use(busboy());
-const port = 8899;
+const port = 8900;
 app.use(express.static(path.join(__dirname, "renders")));
 
 app.get("/", (req, res) => {
@@ -33,10 +33,19 @@ app.route("/upload").post((req, res) => {
 
       console.log("Start blender process " + filename);
       const blenderProcess = exec(
-        `blender -b ${__dirname}/blends/${filename} -o ${__dirname}/renders/${filename}_##### -f 0  -- --cycles-device CUDA`
+        `blender -b ${__dirname}/blends/${filename} -o ${__dirname}/renders/${filename}_##### -f 0  -- --cycles-device CUDA`,
+        (error, stdout, stderr) => {
+          if (error) {
+            console.error(`exec error: ${error}`);
+            return;
+          }
+          console.log(`stdout: ${stdout}`);
+          console.error(`stderr: ${stderr}`);
+        }
       );
       blenderProcess.on("exit", () => {
-        fs.unlink(`${__dirname}/blends/${filename}`); // deletes file
+        console.log("blender finished");
+        // fs.unlink(`${__dirname}/blends/${filename}`); // deletes file
         res.redirect(`/?file=${filename}_00000.png`); // go back home w/ query param
       });
     });
