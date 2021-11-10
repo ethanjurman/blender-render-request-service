@@ -38,7 +38,7 @@ app.route("/upload").post((req, res) => {
       blenderProcess.on("error", (err) => console.log("error", err));
       blenderProcess.on("exit", () => {
         console.log("blender finished");
-        // fs.unlink(`${__dirname}/blends/${filename}`); // deletes file
+        fs.unlink(`${__dirname}/blends/${filename}`); // deletes file
         res.redirect(`/?file=${filename}_00000.png`); // go back home w/ query param
       });
     });
