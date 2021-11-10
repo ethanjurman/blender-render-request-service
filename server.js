@@ -6,18 +6,18 @@ import fs from "fs-extra"; // file sys manipulation
 
 const app = express();
 app.use(busboy());
-const port = 8900;
+const port = 8899;
 app.use(express.static(path.join(__dirname, "renders")));
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "/index.html"));
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
 app.route("/delete").post((req, res) => {
   const filename = req.query["file"];
   console.log(`deleting ${filename} on server`);
   fs.unlink(`${__dirname}/renders/${filename}`); // deletes file
-  res.redirect(`/`); // go back home
+  res.redirect("/"); // go back home
 });
 
 app.route("/upload").post((req, res) => {
@@ -32,17 +32,10 @@ app.route("/upload").post((req, res) => {
       console.log("Upload Finished of " + filename);
 
       console.log("Start blender process " + filename);
-      const blenderProcess = exec(
-        `blender -b ${__dirname}/blends/${filename} -o ${__dirname}/renders/${filename}_##### -f 0  -- --cycles-device CUDA`,
-        (error, stdout, stderr) => {
-          if (error) {
-            console.error(`exec error: ${error}`);
-            return;
-          }
-          console.log(`stdout: ${stdout}`);
-          console.error(`stderr: ${stderr}`);
-        }
-      );
+      const blenderCommand = `blender -b blends/${filename} -o "${__dirname}\\renders\\${filename}_#####" -f 0  -- --cycles-device CUDA`;
+      console.log(blenderCommand);
+      const blenderProcess = exec(blenderCommand);
+      blenderProcess.on("error", (err) => console.log("error", err));
       blenderProcess.on("exit", () => {
         console.log("blender finished");
         // fs.unlink(`${__dirname}/blends/${filename}`); // deletes file
