@@ -46,107 +46,114 @@
           <input type="submit" />
         </form>
       </div>
-    </div>
 
-    <!-- loading area -->
-    <div id="loadbox" style="display: none">
-      We are loading your request
-      <script>
-        const getQueryParams = (searchString) => {
-          const updatedString = searchString.split("?")[1];
-          return updatedString.split("&").reduce((queryObject, query) => {
-            const [key, value] = query.split("=");
-            return { ...queryObject, [key]: value };
-          }, {});
-        };
-        if (window.location.search.includes("request")) {
-          const loadbox = document.getElementById("loadbox");
-          loadbox.style = "";
+      <!-- loading area -->
+      <div id="loadbox" style="display: none">
+        We are loading your request
+        <script>
+          const getQueryParams = (searchString) => {
+            const updatedString = searchString.split("?")[1];
+            return updatedString.split("&").reduce((queryObject, query) => {
+              const [key, value] = query.split("=");
+              return { ...queryObject, [key]: value };
+            }, {});
+          };
+          if (window.location.search.includes("request")) {
+            const loadbox = document.getElementById("loadbox");
+            loadbox.style = "";
 
-          // loop through checking request
-          const { requestId, file, type } = getQueryParams(
-            window.location.search
-          );
-          setInterval(() => {
-            new Promise(() => {
-              fetch(`${window.location.href.split("?")[0]}request/${requestId}`)
-                .then((rawResponse) => rawResponse.text())
-                .then((response) => {
-                  const isPidRunning = response === "true";
-                  if (!isPidRunning) {
-                    // if request failed, the request id no longer exists from the file being finished
-                    window.location.href = `/?${type}=${file}`;
-                  }
-                  if (isPidRunning) {
-                    console.log("retrying");
-                  }
-                });
-            });
-          }, 5000);
-        }
-      </script>
-    </div>
+            // loop through checking request
+            const { requestId, file, type } = getQueryParams(
+              window.location.search
+            );
+            setInterval(() => {
+              new Promise(() => {
+                fetch(
+                  `${window.location.href.split("?")[0]}request/${requestId}`
+                )
+                  .then((rawResponse) => rawResponse.text())
+                  .then((response) => {
+                    const isPidRunning = response === "true";
+                    if (!isPidRunning) {
+                      // if request failed, the request id no longer exists from the file being finished
+                      window.location.href = `/?${type}=${file}`;
+                    }
+                    if (isPidRunning) {
+                      console.log("retrying");
+                    }
+                  });
+              });
+            }, 5000);
+          }
+        </script>
+      </div>
 
-    <!-- animation area -->
-    <div id="videobox" style="display: none">
-      <form id="delete-form-video" method="post" action="delete?file=test.png">
-        <button type="submit" id="delete" style="margin-bottom: 5px">
-          Delete video from server
-        </button>
-        <input id="filename-input-video" name="filename" disabled="true" />
-        <video id="renderVideo" controls></video>
-      </form>
-      <script>
-        if (
-          window.location.search.includes("animation") &&
-          !window.location.search.includes("request")
-        ) {
-          const videobox = document.getElementById("videobox");
-          videobox.style = "";
+      <!-- animation area -->
+      <div id="videobox" style="display: none">
+        <form
+          id="delete-form-video"
+          method="post"
+          action="delete?file=test.png"
+        >
+          <button type="submit" id="delete" style="margin-bottom: 5px">
+            Delete video from server
+          </button>
+          <input id="filename-input-video" name="filename" disabled="true" />
+          <video id="renderVideo" controls></video>
+        </form>
+        <script>
+          if (
+            window.location.search.includes("animation") &&
+            !window.location.search.includes("request")
+          ) {
+            const videobox = document.getElementById("videobox");
+            videobox.style = "";
 
-          const filename = window.location.search.split("animation=")[1];
-          const imageNode = document.getElementById("renderVideo");
-          imageNode.src = filename;
+            const filename = window.location.search.split("animation=")[1];
+            const imageNode = document.getElementById("renderVideo");
+            imageNode.src = filename;
 
-          const fileNameInputField = document.getElementById(
-            "filename-input-video"
-          );
-          fileNameInputField.value = filename;
+            const fileNameInputField = document.getElementById(
+              "filename-input-video"
+            );
+            fileNameInputField.value = filename;
 
-          const deleteForm = document.getElementById("delete-form-video");
-          deleteForm.action = `delete?file=${filename}`;
-        }
-      </script>
-    </div>
+            const deleteForm = document.getElementById("delete-form-video");
+            deleteForm.action = `delete?file=${filename}`;
+          }
+        </script>
+      </div>
 
-    <!-- image area -->
-    <div id="imagebox" style="display: none">
-      <form id="delete-form" method="post" action="delete?file=test.png">
-        <button type="submit" id="delete" style="margin-bottom: 5px">
-          Delete image from server
-        </button>
-        <input id="filename-input" name="filename" disabled="true" />
-        <img id="render" />
-      </form>
-      <script>
-        if (
-          window.location.search.includes("image") &&
-          !window.location.search.includes("request")
-        ) {
-          const imagebox = document.getElementById("imagebox");
-          imagebox.style = "";
+      <!-- image area -->
+      <div id="imagebox" style="display: none">
+        <form id="delete-form" method="post" action="delete?file=test.png">
+          <button type="submit" id="delete" style="margin-bottom: 5px">
+            Delete image from server
+          </button>
+          <input id="filename-input" name="filename" disabled="true" />
+          <img id="render" />
+        </form>
+        <script>
+          if (
+            window.location.search.includes("image") &&
+            !window.location.search.includes("request")
+          ) {
+            const imagebox = document.getElementById("imagebox");
+            imagebox.style = "";
 
-          const filename = window.location.search.split("image=")[1];
-          const imageNode = document.getElementById("render");
-          imageNode.src = filename;
+            const filename = window.location.search.split("image=")[1];
+            const imageNode = document.getElementById("render");
+            imageNode.src = filename;
 
-          const fileNameInputField = document.getElementById("filename-input");
-          fileNameInputField.value = filename;
+            const fileNameInputField =
+              document.getElementById("filename-input");
+            fileNameInputField.value = filename;
 
-          const deleteForm = document.getElementById("delete-form");
-          deleteForm.action = `delete?file=${filename}`;
-        }
-      </script>
+            const deleteForm = document.getElementById("delete-form");
+            deleteForm.action = `delete?file=${filename}`;
+          }
+        </script>
+      </div>
     </div>
   </body>
 </html>
