@@ -6,6 +6,7 @@
 
   <body>
     <!-- upload area -->
+    <h1>This site is being worked on, Dan please don't upload anything yet</h1>
     <div style="margin: 20px auto auto; width: 800px">
       <h2 style="margin-bottom: 0px">Blender Render Request Service</h2>
       <div style="margin-bottom: 1em; font-style: italic">
@@ -69,17 +70,18 @@
           );
           setInterval(() => {
             new Promise(() => {
-              fetch(`${window.location.href.split("?")[0]}${requestId}`).then(
-                (response) => {
-                  if (response.status === 404) {
+              fetch(`${window.location.href.split("?")[0]}request/${requestId}`)
+                .then((rawResponse) => rawResponse.text())
+                .then((response) => {
+                  const isPidRunning = response === "true";
+                  if (!isPidRunning) {
                     // if request failed, the request id no longer exists from the file being finished
                     window.location.href = `/?${type}=${file}`;
                   }
-                  if (response.status !== 404) {
+                  if (isPidRunning) {
                     console.log("retrying");
                   }
-                }
-              );
+                });
             });
           }, 5000);
         }
