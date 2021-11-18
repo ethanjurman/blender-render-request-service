@@ -5,6 +5,7 @@ import fs from "fs-extra"; // file sys manipulation
 import { processRenderFrame } from "./serverCode/processRenderFrame";
 import { processConvertToGif } from "./serverCode/processConvertToGif";
 import { processRenderAnimation } from "./serverCode/processRenderAnimation";
+import { getDataStream } from "./serverCode/dataStream";
 
 const app = express();
 app.use(busboy());
@@ -25,7 +26,9 @@ app.get("/", (req, res) => {
 
 app.get("/request/:pid", (req, res) => {
   try {
-    res.send(process.kill(req.params.pid, 0));
+    // will throw if no process, signal 0 checks without killing PID
+    process.kill(req.params.pid, 0);
+    res.send([getDataStream()]);
   } catch (e) {
     res.send(false);
   }

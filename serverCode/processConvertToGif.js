@@ -1,5 +1,6 @@
 import { exec } from "child_process";
 import fs from "fs-extra"; // file sys manipulation
+import { addToDataStream, clearDataStream } from "./dataStream";
 
 export const processConvertToGif = ({ filename }) => {
   console.log("Start gif process " + filename);
@@ -7,11 +8,13 @@ export const processConvertToGif = ({ filename }) => {
   console.log(gifCommand);
   const gifProcess = exec(gifCommand);
   gifProcess.stdout.on("data", (data) => {
+    addToDataStream(`${data}`);
     console.log(`stdout: ${data}`);
   });
   gifProcess.on("error", (err) => console.log("error", err));
   gifProcess.on("exit", (code) => {
     console.log("gif complete", code);
+    clearDataStream();
     fs.unlink(`blends/${filename}`) // deletes original file
       .catch((e) => {
         console.log(

@@ -50,6 +50,9 @@
       <!-- loading area -->
       <div id="loadbox" style="display: none">
         We are loading your request
+        <div style="background-color: #222; color: white; padding: 14px">
+          <code id="streamData"> </code>
+        </div>
         <script>
           const getQueryParams = (searchString) => {
             const updatedString = searchString.split("?")[1];
@@ -73,17 +76,18 @@
                 )
                   .then((rawResponse) => rawResponse.text())
                   .then((response) => {
-                    const isPidRunning = response === "true";
+                    const isPidRunning = response !== "false";
                     if (!isPidRunning) {
                       // if request failed, the request id no longer exists from the file being finished
                       window.location.href = `/?${type}=${file}`;
                     }
                     if (isPidRunning) {
-                      console.log("retrying");
+                      document.getElementById("streamData").innerText =
+                        JSON.parse(response).join("\n");
                     }
                   });
               });
-            }, 5000);
+            }, 500);
           }
         </script>
       </div>

@@ -1,5 +1,6 @@
 import { spawn } from "child_process";
 import fs from "fs-extra"; // file sys manipulation
+import { addToDataStream, clearDataStream } from "./dataStream";
 
 export const processRenderAnimation = ({ filename, formData }) => {
   console.log("Start blender process " + filename);
@@ -18,11 +19,13 @@ export const processRenderAnimation = ({ filename, formData }) => {
     `CUDA`,
   ]);
   blenderProcess.stdout.on("data", (data) => {
+    addToDataStream(`${data}`);
     console.log(`stdout: ${data}`);
   });
   blenderProcess.on("error", (err) => console.log("error", err));
   blenderProcess.on("exit", () => {
     console.log("blender finished");
+    clearDataStream();
     fs.unlink(`blends/${filename}`) // deletes file
       .catch((e) => {
         console.log(
