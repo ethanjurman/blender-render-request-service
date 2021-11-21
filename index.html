@@ -12,39 +12,57 @@
         An absolutely bare bones blender render service
       </div>
       <div>
-        <h3>For Single Image Render</h3>
-        <form method="post" action="upload" enctype="multipart/form-data">
-          <input
-            type="file"
-            name="fileUploaded"
-            accept=".blend,.blend1,.blend2"
-          />
-          <input type="submit" />
-        </form>
-      </div>
-      <div>
-        <h3>For Animation Render</h3>
-        <form
-          method="post"
-          action="uploadAnimation"
-          enctype="multipart/form-data"
-        >
-          <input
-            type="file"
-            name="fileUploaded"
-            accept=".blend,.blend1,.blend2"
-          />
-          <input type="number" name="startFrame" placeholder="start frame" />
-          <input type="number" name="endFrame" placeholder="end frame" />
-          <input type="submit" />
-        </form>
-      </div>
-      <div>
-        <h3>For Converting MKV / MOV / etc... to GIF</h3>
-        <form method="post" action="uploadToGif" enctype="multipart/form-data">
-          <input type="file" name="fileUploaded" />
-          <input type="submit" />
-        </form>
+        <div>
+          <h3>For Single Image Render</h3>
+          <form method="post" action="upload" enctype="multipart/form-data">
+            <input
+              type="file"
+              class="singleImageRender"
+              name="fileUploaded"
+              accept=".blend,.blend1,.blend2"
+            />
+            <input class="singleImageRender" type="submit" disabled="true" />
+          </form>
+        </div>
+        <div>
+          <h3>For Animation Render</h3>
+          <form
+            method="post"
+            action="uploadAnimation"
+            enctype="multipart/form-data"
+          >
+            <input
+              type="file"
+              class="animationRender"
+              name="fileUploaded"
+              accept=".blend,.blend1,.blend2"
+            />
+            <input type="number" name="startFrame" placeholder="start frame" />
+            <input type="number" name="endFrame" placeholder="end frame" />
+            <input class="animationRender" type="submit" disabled="true" />
+          </form>
+        </div>
+        <div>
+          <h3>For Converting MKV / MOV / etc... to GIF</h3>
+          <form
+            method="post"
+            action="uploadToGif"
+            enctype="multipart/form-data"
+          >
+            <input type="file" class="gifConverter" name="fileUploaded" />
+            <input class="gifConverter" type="submit" disabled="true" />
+          </form>
+        </div>
+        <script>
+          document.querySelectorAll("input[type=file]").forEach(
+            (fileInput) =>
+              (fileInput.onchange = ({ target: { value } }) => {
+                document.querySelector(
+                  `input[type=submit].${fileInput.className}`
+                ).disabled = !value;
+              })
+          );
+        </script>
       </div>
 
       <!-- loading area -->
